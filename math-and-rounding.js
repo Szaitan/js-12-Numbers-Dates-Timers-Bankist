@@ -33,7 +33,7 @@ console.log(Math.floor(34.189)); // 34
 console.log(Math.random()); // f.e. 0.4375135
 
 // Rounding numbers, return string
-// cn be fixed with + sign
+// can be fixed with + sign
 console.log(+(47.99).toFixed()); // 47
 console.log(+(327.85343).toFixed(2)); // 327.85
 
