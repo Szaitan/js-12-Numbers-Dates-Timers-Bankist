@@ -258,7 +258,7 @@ btnSort.addEventListener('click', function (e) {
 // Affecting everyother row
 labelBalance.addEventListener('click', function () {
   [...document.querySelectorAll('.movements__row')].forEach(function (ele, i) {
-    if (i % 2) {
+    if ((i + 1) % 2) {
       console.log('test');
       console.log(ele);
       ele.style.backgroundColor = 'red';
