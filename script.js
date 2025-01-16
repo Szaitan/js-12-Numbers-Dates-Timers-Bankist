@@ -16,14 +16,14 @@ const account1 = {
   pin: 1111,
 
   movementsDates: [
-    '2019-11-18T21:31:17.178Z',
-    '2019-12-23T07:42:02.383Z',
+    '2020-11-18T21:31:17.178Z',
+    '2020-12-23T07:42:02.383Z',
     '2020-01-28T09:15:04.904Z',
     '2020-04-01T10:17:24.185Z',
     '2020-05-08T14:11:59.604Z',
-    '2020-05-27T17:01:17.194Z',
-    '2020-07-11T23:36:17.929Z',
-    '2020-07-12T10:51:36.790Z',
+    '2022-05-27T17:01:17.194Z',
+    '2023-07-11T23:36:17.929Z',
+    '2024-07-12T10:51:36.790Z',
   ],
   currency: 'EUR',
   locale: 'pt-PT', // de-DE
@@ -80,6 +80,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 /////////////////////////////////////////////////
 // Functions
+// Display of menu time
 const now = new Date();
 const year = now.getFullYear();
 const month = now.getMonth() + 1;
@@ -93,22 +94,29 @@ labelDate.textContent = `${year}/${month < 10 ? `0${month}` : month}/${
 
 const displayMovements = function (account, sort = false) {
   containerMovements.innerHTML = '';
-
-  const movs = sort
-    ? account.movements.slice().sort((a, b) => a - b)
-    : account.movements;
   const dates = account.movementsDates;
 
-  movs.forEach(function (_, i) {
-    const type = movs[i] > 0 ? 'deposit' : 'withdrawal';
+  let movs = account.movements.map(function (val, i) {
+    return { movment: val, time: dates[i] };
+  });
+
+  if (sort) {
+    movs.sort(function (a, b) {
+      return new Date(b.time) - new Date(a.time);
+    });
+  }
+  console.log(movs);
+
+  movs.forEach(function (obj, i) {
+    const type = obj.movment > 0 ? 'deposit' : 'withdrawal';
 
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-        <div class="movements__date">${dates[i].split('T')[0]}</div>
-        <div class="movements__value">${movs[i].toFixed(2)}€</div>
+        <div class="movements__date">${obj.time.split('T')[0]}</div>
+        <div class="movements__value">${obj.movment.toFixed(2)}€</div>
       </div>
     `;
 
