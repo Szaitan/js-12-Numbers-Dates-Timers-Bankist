@@ -80,21 +80,35 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 /////////////////////////////////////////////////
 // Functions
+const now = new Date();
+const year = now.getFullYear();
+const month = now.getMonth() + 1;
+const day = now.getDate();
+const hour = now.getHours();
+const minute = now.getMinutes();
+labelDate.textContent = '';
+labelDate.textContent = `${year}/${month < 10 ? `0${month}` : month}/${
+  day < 10 ? `0${day}` : day
+} ${hour}:${minute}`;
 
-const displayMovements = function (movements, sort = false) {
+const displayMovements = function (account, sort = false) {
   containerMovements.innerHTML = '';
 
-  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  const movs = sort
+    ? account.movements.slice().sort((a, b) => a - b)
+    : account.movements;
+  const dates = account.movementsDates;
 
-  movs.forEach(function (mov, i) {
-    const type = mov > 0 ? 'deposit' : 'withdrawal';
+  movs.forEach(function (_, i) {
+    const type = movs[i] > 0 ? 'deposit' : 'withdrawal';
 
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-        <div class="movements__value">${mov.toFixed(2)}€</div>
+        <div class="movements__date">${dates[i].split('T')[0]}</div>
+        <div class="movements__value">${movs[i].toFixed(2)}€</div>
       </div>
     `;
 
@@ -145,7 +159,7 @@ createUsernames(accounts);
 
 const updateUI = function (acc) {
   // Display movements
-  displayMovements(acc.movements);
+  displayMovements(acc);
 
   // Display balance
   calcDisplayBalance(acc);
@@ -198,8 +212,11 @@ btnTransfer.addEventListener('click', function (e) {
     receiverAcc?.username !== currentAccount.username
   ) {
     // Doing the transfer
+    const transferDate = new Date().toISOString();
     currentAccount.movements.push(-amount);
+    currentAccount.movementsDates.push(transferDate);
     receiverAcc.movements.push(amount);
+    receiverAcc.movementsDates.push(transferDate);
 
     // Update UI
     updateUI(currentAccount);
@@ -214,6 +231,8 @@ btnLoan.addEventListener('click', function (e) {
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
     // Add movement
     currentAccount.movements.push(amount);
+    const transferDate = new Date().toISOString();
+    currentAccount.movementsDates.push(transferDate);
 
     // Update UI
     updateUI(currentAccount);
@@ -247,7 +266,7 @@ btnClose.addEventListener('click', function (e) {
 let sorted = false;
 btnSort.addEventListener('click', function (e) {
   e.preventDefault();
-  displayMovements(currentAccount.movements, !sorted);
+  displayMovements(currentAccount, !sorted);
   sorted = !sorted;
 });
 

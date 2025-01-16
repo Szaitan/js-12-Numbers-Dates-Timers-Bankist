@@ -27,3 +27,4 @@ console.log(future.getDay()); // returns the day in the week 0
 
 console.log(future.toISOString()); // geting nice formated string
 console.log(future.getTime()); // returns timestamp of object
+// 2458767600000
