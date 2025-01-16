@@ -24,3 +24,6 @@ console.log(future.getFullYear()); // 2047
 console.log(future.getMonth()); // 12
 console.log(future.getDate()); // 1
 console.log(future.getDay()); // returns the day in the week 0
+
+console.log(future.toISOString()); // geting nice formated string
+console.log(future.getTime()); // returns timestamp of object
