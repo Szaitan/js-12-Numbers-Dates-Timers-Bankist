@@ -18,7 +18,7 @@ console.log(new Date(0)); // Date Thu Jan 01 1970 01:00:00 GMT+0100
 console.log(now.getMilliseconds());
 
 // As all objects, dates also have their own methods
-const future = new Date('2047 12 01');
+const future = new Date('2025 01 28');
 console.log(future);
 console.log(future.getFullYear()); // 2047
 console.log(future.getMonth()); // 12
@@ -28,3 +28,10 @@ console.log(future.getDay()); // returns the day in the week 0
 console.log(future.toISOString()); // geting nice formated string
 console.log(future.getTime()); // returns timestamp of object
 // 2458767600000
+
+// We can operate with dates
+const timeDiffrence = future - now;
+console.log(timeDiffrence); // 721541630066
+// we can transofrm time stamp by simple divide number
+// by total num of miliseconds
+console.log(timeDiffrence / (1000 * 60 * 60 * 24));
