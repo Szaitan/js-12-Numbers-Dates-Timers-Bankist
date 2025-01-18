@@ -23,7 +23,7 @@ const account1 = {
     '2020-05-08T14:11:59.604Z',
     '2022-05-27T17:01:17.194Z',
     '2023-07-11T23:36:17.929Z',
-    '2024-07-12T10:51:36.790Z',
+    '2025-01-18T10:51:36.790Z',
   ],
   currency: 'EUR',
   locale: 'pt-PT', // de-DE
@@ -110,18 +110,44 @@ const displayMovements = function (account, sort = false) {
   movs.forEach(function (obj, i) {
     const type = obj.movment > 0 ? 'deposit' : 'withdrawal';
 
+    const moveTime = new Date(obj.time);
+    const timeNow = new Date();
+
+    const moveYear = moveTime.getFullYear();
+    const moveMonth = moveTime.getMonth() + 1;
+    const moveDay = moveTime.getDay();
+    const moveHour = moveTime.getHours();
+    const moveMinutes = moveTime.getMinutes();
+    const moveSeconds = moveTime.getSeconds();
+    let displayTime;
+    const timeDiff = calcTimeDiffMovments(moveTime, timeNow);
+
+    if (timeDiff < 1) {
+      displayTime = `Today ${moveHour}:${moveMinutes}:${moveSeconds}`;
+    } else if (timeDiff > 0 && timeDiff < 2) {
+      displayTime = `Yesterday ${moveHour}:${moveMinutes}:${moveSeconds}`;
+    } else {
+      displayTime = `${moveYear}/${String(moveMonth).padStart(2, '0')}/${String(
+        moveDay
+      ).padStart(2, '0')} ${moveHour}:${moveMinutes}:${moveSeconds}`;
+    }
+
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-        <div class="movements__date">${obj.time.split('T')[0]}</div>
+        <div class="movements__date">${displayTime}</div>
         <div class="movements__value">${obj.movment.toFixed(2)}€</div>
       </div>
     `;
 
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
+};
+
+const calcTimeDiffMovments = function (timeMove, now) {
+  return (now - timeMove) / 86_400_000;
 };
 
 const calcDisplayBalance = function (acc) {
