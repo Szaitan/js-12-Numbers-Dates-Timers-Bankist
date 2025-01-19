@@ -15,3 +15,9 @@ const options = {
   day: 'numeric',
 };
 console.log(new Intl.DateTimeFormat('en-UK', options).format(now)); // 19/01/2025
+
+// VERY IMPORTANT
+// We can get language formating from user webbrowser
+// using navigator locale
+
+console.log(navigator.language); // pl
