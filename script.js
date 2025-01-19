@@ -80,17 +80,6 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 /////////////////////////////////////////////////
 // Functions
-// Display of menu time
-const now = new Date();
-const year = now.getFullYear();
-const month = now.getMonth() + 1;
-const day = now.getDate();
-const hour = now.getHours();
-const minute = now.getMinutes();
-labelDate.textContent = '';
-labelDate.textContent = `${year}/${month < 10 ? `0${month}` : month}/${
-  day < 10 ? `0${day}` : day
-} ${hour}:${minute}`;
 
 const displayMovements = function (account, sort = false) {
   containerMovements.innerHTML = '';
@@ -112,24 +101,36 @@ const displayMovements = function (account, sort = false) {
 
     const moveTime = new Date(obj.time);
     const timeNow = new Date();
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    };
 
-    const moveYear = moveTime.getFullYear();
-    const moveMonth = moveTime.getMonth() + 1;
-    const moveDay = moveTime.getDay();
-    const moveHour = moveTime.getHours();
-    const moveMinutes = moveTime.getMinutes();
-    const moveSeconds = moveTime.getSeconds();
+    const optionsHour = {
+      hour: 'numeric',
+      minute: 'numeric',
+    };
+
     let displayTime;
     const timeDiff = calcTimeDiffMovments(moveTime, timeNow);
 
     if (timeDiff < 1) {
-      displayTime = `Today ${moveHour}:${moveMinutes}:${moveSeconds}`;
+      displayTime = `Today ${new Intl.DateTimeFormat(
+        obj.locale,
+        optionsHour
+      ).format()}`;
     } else if (timeDiff > 0 && timeDiff < 2) {
-      displayTime = `Yesterday ${moveHour}:${moveMinutes}:${moveSeconds}`;
+      displayTime = `Yesterday ${new Intl.DateTimeFormat(
+        obj.locale,
+        optionsHour
+      ).format()}`;
     } else {
-      displayTime = `${moveYear}/${String(moveMonth).padStart(2, '0')}/${String(
-        moveDay
-      ).padStart(2, '0')} ${moveHour}:${moveMinutes}:${moveSeconds}`;
+      displayTime = new Intl.DateTimeFormat(obj.locale, options).format(
+        moveTime
+      );
     }
 
     const html = `
@@ -191,6 +192,7 @@ const createUsernames = function (accs) {
 };
 createUsernames(accounts);
 
+// Update of UI
 const updateUI = function (acc) {
   // Display movements
   displayMovements(acc);
@@ -206,6 +208,10 @@ const updateUI = function (acc) {
 // Event handlers
 let currentAccount;
 
+// Time now
+const now = new Date();
+
+// Login user to interface
 btnLogin.addEventListener('click', function (e) {
   // Prevent form from submitting
   e.preventDefault();
@@ -213,7 +219,20 @@ btnLogin.addEventListener('click', function (e) {
   currentAccount = accounts.find(
     acc => acc.username === inputLoginUsername.value
   );
-  console.log(currentAccount);
+
+  // Display of time
+  const options = {
+    hour: 'numeric',
+    minute: 'numeric',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+  };
+
+  labelDate.textContent = new Intl.DateTimeFormat(
+    currentAccount.locale,
+    options
+  ).format(now);
 
   if (currentAccount?.pin === Number(inputLoginPin.value)) {
     // Display UI and message
