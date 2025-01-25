@@ -32,6 +32,7 @@ const options = {
   minute: 'numeric',
   second: 'numeric',
 };
+
 // Timeinterval
 setInterval(function () {
   const date = new Date();

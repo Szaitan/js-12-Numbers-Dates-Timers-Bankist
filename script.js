@@ -50,6 +50,8 @@ const account2 = {
 };
 
 const accounts = [account1, account2];
+let loginTime;
+let logoutTime;
 
 /////////////////////////////////////////////////
 // Elements
@@ -94,7 +96,6 @@ const displayMovements = function (account, sort = false) {
       return new Date(b.time) - new Date(a.time);
     });
   }
-  console.log(movs);
 
   movs.forEach(function (obj, i) {
     const type = obj.movment > 0 ? 'deposit' : 'withdrawal';
@@ -236,6 +237,25 @@ btnLogin.addEventListener('click', function (e) {
   // Prevent form from submitting
   e.preventDefault();
 
+  // Logout option
+  loginTime = new Date().getTime();
+  logoutTime = loginTime + 1000 * 60 * 5;
+  const logoutTimer = setInterval(function () {
+    if (new Date().getTime() >= logoutTime) {
+      containerApp.style.opacity = 0;
+      inputCloseUsername.value = inputClosePin.value = '';
+      labelWelcome.textContent = 'Log in to get started';
+      clearTimeout(logoutTimer);
+    } else {
+      const options = { minute: 'numeric', second: 'numeric' };
+      const x = new Date(logoutTime - new Date().getTime());
+      labelTimer.textContent = new Intl.DateTimeFormat(
+        currentAccount.locale,
+        options
+      ).format(x);
+    }
+  }, 1000);
+
   currentAccount = accounts.find(
     acc => acc.username === inputLoginUsername.value
   );
@@ -327,8 +347,6 @@ btnClose.addEventListener('click', function (e) {
     const index = accounts.findIndex(
       acc => acc.username === currentAccount.username
     );
-    console.log(index);
-    // .indexOf(23)
 
     // Delete account
     accounts.splice(index, 1);
@@ -347,16 +365,10 @@ btnSort.addEventListener('click', function (e) {
   sorted = !sorted;
 });
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
-
 // Affecting everyother row
 labelBalance.addEventListener('click', function () {
   [...document.querySelectorAll('.movements__row')].forEach(function (ele, i) {
     if ((i + 1) % 2) {
-      console.log('test');
-      console.log(ele);
       ele.style.backgroundColor = 'red';
     }
   });
